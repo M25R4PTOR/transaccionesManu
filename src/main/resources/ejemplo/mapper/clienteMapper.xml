@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ejemplo.mapper.ClienteMapper">
+
+	<select id="getCliente" resultMap="clienteRM">
+		SELECT IDCLIENTE, NOMBRE, APELLIDOS
+			FROM CLIENTE
+		WHERE IDCLIENTE=#{idCliente}
+	</select>
+	
+	<select id="getIdMaxCliente" resultType="int">
+		SELECT MAX(IDCLIENTE) FROM CLIENTE
+	</select>
+
+	<insert id="insertarCliente">
+		<selectKey keyProperty="idCliente" resultType="int" order="BEFORE">
+			SELECT IFNULL(MAX(IDCLIENTE) + 1, 0) FROM CLIENTE
+		</selectKey>
+	
+		INSERT INTO CLIENTE (IDCLIENTE, NOMBRE, APELLIDOS)
+		VALUES (#{idCliente}, #{cliente.nombre}, #{cliente.apellidos})
+	</insert>
+	
+	<update id="modificarCliente">
+		UPDATE CLIENTE SET NOMBRE=#{cliente.nombre}, APELLIDOS=#{cliente.apellidos}
+			WHERE IDCLIENTE=#{cliente.idCliente}
+	</update>
+	
+	<delete id="eliminarCliente">
+ 		DELETE FROM CLIENTE WHERE IDCLIENTE = #{idCliente}
+	</delete>
+
+    <resultMap type="ejemplo.modelo.Cliente" id="clienteRM">
+    	<constructor>
+    		<idArg column="idCliente" javaType="integer"/>
+    		<arg column="nombre" javaType="string"/>
+    		<arg column="apellidos" javaType="string"/>
+    	</constructor>
+    </resultMap>
+</mapper>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ejemplo.mapper.PedidoMapper">
+
+	<select id="getPedido" resultMap="pedidoRM">
+		SELECT IDPEDIDO, NOMBRE, PRECIO, IDCLIENTE
+			FROM PEDIDO
+		WHERE IDPEDIDO=#{idPedido}
+	</select>
+
+	<insert id="insertarPedido">
+		<selectKey keyProperty="idPedido" resultType="int" order="BEFORE">
+			SELECT IFNULL(MAX(IDPEDIDO) + 1, 0) FROM PEDIDO
+		</selectKey>
+	
+		INSERT INTO PEDIDO (IDPEDIDO, NOMBRE, PRECIO, IDCLIENTE)
+		VALUES (#{idPedido}, #{pedido.nombre}, #{pedido.precio}, #{pedido.idCliente})
+	</insert>
+	
+	<update id="modificarPedido">
+		UPDATE PEDIDO SET NOMBRE=#{pedido.nombre}, PRECIO=#{pedido.precio}, IDCLIENTE=#{pedido.idCliente}
+			WHERE IDPEDIDO=#{pedido.idPedido}
+	</update>
+	
+	<delete id="eliminarPedido">
+ 		DELETE FROM PEDIDO WHERE IDPEDIDO = #{idPedido}
+	</delete>
+
+    <resultMap type="ejemplo.modelo.Pedido" id="pedidoRM">
+    	<constructor>
+    		<idArg column="idPedido" javaType="integer"/>
+    		<arg column="nombre" javaType="string"/>
+    		<arg column="precio" javaType="integer"/>
+    		<arg column="idCliente" javaType="integer"/>
+    	</constructor>
+    </resultMap>
+</mapper>
